@@ -51,7 +51,9 @@ func (it *IntersectIterator) Next() (int, bool) {
                 }
                 equals := 0
                 for i := 0; i < size; i++ {
-                        if it.values[i] == advice {
+                        if it.values[i] > advice {
+                                advice = it.values[i]
+                        } else {
                                 equals++
                         }
                 }

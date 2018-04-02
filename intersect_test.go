@@ -65,7 +65,7 @@ func TestIntersectIteratorIssue0(t *testing.T) {
 }
 
 func TestIntersectIteratorBrut(t *testing.T) {
-        for i := 1; i < 1000; i++ {
+        for i := 0; i < 1000; i++ {
                 it0 := arrayIteratorRnd(i)
                 it1 := arrayIteratorRnd(i)
                 res := make([]int, 0, i)

@@ -61,5 +61,4 @@ func (it *IntersectIterator) Next() (int, bool) {
 			return advice, true
 		}
 	}
-	return 0, false
 }

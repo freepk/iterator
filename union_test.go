@@ -5,11 +5,10 @@ import (
 	"testing"
 )
 
-func TestIntersectIterator(t *testing.T) {
-	iter := NewIntersectIterator([]Iterator{
-		NewArrayIterator([]int{0, 1, 2, 3}),
-		NewArrayIterator([]int{1, 2, 3, 4}),
-	})
+func TestUnionIterator(t *testing.T) {
+	a := NewArrayIterator([]int{1, 3})
+	b := NewArrayIterator([]int{2})
+	iter := NewUnionIterator([]Iterator{a, b})
 	v, ok := iter.Next()
 	if !ok || v != 1 {
 		t.Fail()
@@ -28,18 +27,7 @@ func TestIntersectIterator(t *testing.T) {
 	}
 }
 
-func TestIntersectIteratorIssue0(t *testing.T) {
-	iter := NewIntersectIterator([]Iterator{
-		NewArrayIterator([]int{4037200794235010051, 6129484611666145821}),
-		NewArrayIterator([]int{3916589616287113937, 6334824724549167320}),
-	})
-	v, ok := iter.Next()
-	if ok || v != 0 {
-		t.Fail()
-	}
-}
-
-func TestIntersectIteratorBrut(t *testing.T) {
+func TestUnionIteratorBrut(t *testing.T) {
 	for i := 0; i < 1000; i++ {
 		it0 := arrayIteratorRnd(i)
 		it1 := arrayIteratorRnd(i)
@@ -58,9 +46,9 @@ func TestIntersectIteratorBrut(t *testing.T) {
 	}
 }
 
-func BenchmarkIntersectIterator(b *testing.B) {
+func BenchmarkUnionIterator(b *testing.B) {
 	b.StopTimer()
-	iter := NewIntersectIterator([]Iterator{arrayIterator0, arrayIterator1})
+	iter := NewUnionIterator([]Iterator{arrayIterator0, arrayIterator1})
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		iter.Reset()

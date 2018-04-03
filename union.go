@@ -23,8 +23,7 @@ func NewUnionIterator(iterators []Iterator) *UnionIterator {
 		initIterators: initIterators,
 		initValues:    initValues,
 		iterators:     initIterators,
-		values:        initValues,
-	}
+		values:        initValues}
 }
 
 func (it *UnionIterator) Reset() {

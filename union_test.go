@@ -32,7 +32,7 @@ func TestUnionIteratorBrut(t *testing.T) {
 		it0 := arrayIteratorRnd(i)
 		it1 := arrayIteratorRnd(i)
 		res := make([]int, 0, i)
-		iter := NewIntersectIterator([]Iterator{it0, it1})
+		iter := NewUnionIterator([]Iterator{it0, it1})
 		for {
 			v, ok := iter.Next()
 			if !ok {

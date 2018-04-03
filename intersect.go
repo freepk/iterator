@@ -2,13 +2,10 @@ package iterator
 
 type IntersectIterator struct {
 	iterators []Iterator
-	values    []int
 }
 
 func NewIntersectIterator(iterators []Iterator) *IntersectIterator {
-	return &IntersectIterator{
-		iterators: iterators,
-		values:    make([]int, len(iterators))}
+	return &IntersectIterator{iterators: iterators}
 }
 
 func (it *IntersectIterator) Reset() {
@@ -20,45 +17,31 @@ func (it *IntersectIterator) Reset() {
 
 func (it *IntersectIterator) Next() (int, bool) {
 	size := len(it.iterators)
-	if size == 0 {
+	advice, ok := it.iterators[0].Next()
+	if !ok {
 		return 0, false
 	}
-	if size == 1 {
-		return it.iterators[0].Next()
-	}
-	ok := false
-	advice := 0
-	for i := 0; i < size; i++ {
-		it.values[i], ok = it.iterators[i].Next()
+	i := 1
+	equals := 1
+	for equals != size {
+		value, ok := it.iterators[i].Next()
 		if !ok {
 			return 0, false
 		}
-		if i == 0 || advice < it.values[i] {
-			advice = it.values[i]
+		for advice > value {
+			value, ok = it.iterators[i].Next()
+			if !ok {
+				return 0, false
+			}
 		}
+		if advice < value {
+			advice = value
+			i = 0
+			equals = 1
+			continue
+		}
+		equals++
+		i++
 	}
-	for {
-		for i := 0; i < size; i++ {
-			if it.values[i] == advice {
-				continue
-			}
-			for it.values[i] < advice {
-				it.values[i], ok = it.iterators[i].Next()
-				if !ok {
-					return 0, false
-				}
-			}
-		}
-		equals := 0
-		for i := 0; i < size; i++ {
-			if it.values[i] > advice {
-				advice = it.values[i]
-			} else {
-				equals++
-			}
-		}
-		if equals == size {
-			return advice, true
-		}
-	}
+	return advice, true
 }

@@ -41,23 +41,18 @@ func TestIntersect(t *testing.T) {
 }
 
 func TestIntersectIterator(t *testing.T) {
-	for i := 10; i < 100; i++ {
-		a := randArrays(i, i*5)
-		b := arraysCombine(a, intersect)
-		c := NewIntersectIterator(arraysToIterators(a))
-		d := make([]int, 0)
-		for {
-			v, ok := c.Next()
-			if !ok {
-				break
-			}
-			d = append(d, v)
+	a := arraysCombine(testRandArrays, intersect)
+	b := NewIntersectIterator(arraysToIterators(testRandArrays))
+	c := make([]int, 0)
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
 		}
-		if !arraysIsEqual(b, d) {
-			t.Logf("%#v", b)
-			t.Logf("%#v", d)
-			t.Fail()
-		}
+		c = append(c, v)
+	}
+	if !arraysIsEqual(a, c) {
+		t.Fail()
 	}
 }
 

@@ -12,9 +12,9 @@ var (
 func init() {
 	println("init testRandArrays")
 	testRandArrays = [][]int{
-		randArray(10000),
-		randArray(20000),
-		randArray(30000)}
+		randArray(1000),
+		randArray(2000),
+		randArray(3000)}
 }
 
 func randArray(size int) []int {

@@ -22,6 +22,7 @@ func union(a, b []int) []int {
 			continue
 		}
 		c = append(c, a[i])
+		c = append(c, b[j])
 		i++
 		j++
 	}
@@ -37,11 +38,46 @@ func union(a, b []int) []int {
 }
 
 func TestUnion(t *testing.T) {
-	a := []int{0, 100, 200, 200, 300, 350, 400}
-	b := []int{200, 200, 400, 500}
-	c := []int{200, 200, 400}
+	a := []int{0, 100, 200, 300, 350, 400}
+	b := []int{400, 500}
+	c := []int{200, 400}
 	d := arraysCombine([][]int{a, b, c}, union)
-	if !arraysIsEqual([]int{0, 100, 200, 200, 300, 350, 400, 500}, d) {
+	if !arraysIsEqual([]int{0, 100, 200, 200, 300, 350, 400, 400, 400, 500}, d) {
 		t.Fail()
+	}
+}
+
+func TestUnionIterator(t *testing.T) {
+	a := arraysCombine(testRandArrays, union)
+	b := NewUnionIterator(arraysToIterators(testRandArrays))
+	c := make([]int, 0)
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arraysIsEqual(a, c) {
+		t.Fail()
+	}
+}
+
+func BenchmarkUnion(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		arraysCombine(testRandArrays, union)
+	}
+}
+
+func BenchmarkUnionIterator(b *testing.B) {
+	it := NewUnionIterator(arraysToIterators(testRandArrays))
+	for i := 0; i < b.N; i++ {
+		it.Reset()
+		for {
+			_, ok := it.Next()
+			if !ok {
+				break
+			}
+		}
 	}
 }

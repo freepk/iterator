@@ -5,6 +5,18 @@ import (
 	"sort"
 )
 
+var (
+	testRandArrays [][]int
+)
+
+func init() {
+	println("init testRandArrays")
+	testRandArrays = [][]int{
+		randArray(10000),
+		randArray(20000),
+		randArray(30000)}
+}
+
 func randArray(size int) []int {
 	if size == 0 {
 		return []int{}

@@ -37,11 +37,11 @@ func union(a, b []int) []int {
 }
 
 func TestUnion(t *testing.T) {
-	a := []int{0, 100, 200, 300, 350, 400}
-	b := []int{200, 400, 500}
-	c := []int{200, 400}
+	a := []int{0, 100, 200, 200, 300, 350, 400}
+	b := []int{200, 200, 400, 500}
+	c := []int{200, 200, 400}
 	d := arraysCombine([][]int{a, b, c}, union)
-	if !arraysIsEqual([]int{0, 100, 200, 300, 350, 400, 500}, d) {
+	if !arraysIsEqual([]int{0, 100, 200, 200, 300, 350, 400, 500}, d) {
 		t.Fail()
 	}
 }

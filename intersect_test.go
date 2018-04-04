@@ -60,3 +60,22 @@ func TestIntersectIterator(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkIntersect(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		arraysCombine(testRandArrays, intersect)
+	}
+}
+
+func BenchmarkIntersectIterator(b *testing.B) {
+	it := NewIntersectIterator(arraysToIterators(testRandArrays))
+	for i := 0; i < b.N; i++ {
+		it.Reset()
+		for {
+			_, ok := it.Next()
+			if !ok {
+				break
+			}
+		}
+	}
+}

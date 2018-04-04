@@ -5,6 +5,44 @@ import (
 	"testing"
 )
 
+func intersect(a, b []int) []int {
+	asize := len(a)
+	bsize := len(b)
+	csize := asize
+	if csize > bsize {
+		csize = bsize
+	}
+	c := make([]int, csize)
+	i := 0
+	j := 0
+	for i < asize && j < bsize {
+		if a[i] < b[j] {
+			i++
+			continue
+		}
+		if a[i] > b[j] {
+			j++
+			continue
+		}
+		c = append(c, a[i])
+		i++
+		j++
+	}
+	return c
+}
+
+func intersectA(a [][]int) []int {
+	size := len(a)
+	if size < 2 {
+		return []int{}
+	}
+	c := intersect(a[0], a[1])
+	for i := 2; i < size; i++ {
+		c = intersect(c, a[i])
+	}
+	return c
+}
+
 func TestIntersectIterator(t *testing.T) {
 	iter := NewIntersectIterator([]Iterator{
 		NewArrayIterator([]int{0, 1, 2, 3}),

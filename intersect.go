@@ -17,13 +17,17 @@ func (it *IntersectIterator) Reset() {
 
 func (it *IntersectIterator) Next() (int, bool) {
 	size := len(it.iterators)
-	advice, ok := it.iterators[0].Next()
+	i := 0
+	advice, ok := it.iterators[i].Next()
 	if !ok {
 		return 0, false
 	}
-	i := 1
-	equals := 1
-	for equals != size {
+	skip := i
+	for i < size {
+		if i == skip {
+			i++
+			continue
+		}
 		value, ok := it.iterators[i].Next()
 		if !ok {
 			return 0, false
@@ -36,11 +40,10 @@ func (it *IntersectIterator) Next() (int, bool) {
 		}
 		if advice < value {
 			advice = value
+			skip = i
 			i = 0
-			equals = 1
 			continue
 		}
-		equals++
 		i++
 	}
 	return advice, true

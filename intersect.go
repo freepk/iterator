@@ -6,7 +6,6 @@ type IntersectIterator struct {
 
 func NewIntersectIterator(iterators []Iterator) *IntersectIterator {
 	iter := &IntersectIterator{iterators: iterators}
-	iter.Reset()
 	return iter
 }
 

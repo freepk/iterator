@@ -12,7 +12,6 @@ func NewUnionIterator(iterators []Iterator) *UnionIterator {
                 iterators: iterators,
                 values:    make([]int, size),
                 remains:   size}
-        iter.Reset()
         return iter
 }
 
@@ -22,16 +21,22 @@ func (it *UnionIterator) swap(offset int) {
         it.values[it.remains], it.values[offset] = it.values[offset], it.values[it.remains]
 }
 
-func (it *UnionIterator) Reset() {
+func (it *UnionIterator) first() {
         ok := false
-        it.remains = len(it.iterators)
         for i := 0; i < it.remains; i++ {
-                it.iterators[i].Reset()
                 it.values[i], ok = it.iterators[i].Next()
                 if !ok {
                         it.swap(i)
                 }
         }
+}
+
+func (it *UnionIterator) Reset() {
+        it.remains = len(it.iterators)
+        for i := 0; i < it.remains; i++ {
+                it.iterators[i].Reset()
+        }
+        it.first()
 }
 
 func (it *UnionIterator) Next() (int, bool) {

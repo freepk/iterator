@@ -46,3 +46,18 @@ func arraysToIterators(a [][]int) []Iterator {
 	}
 	return res
 }
+
+func arraysCombine(a [][]int, f func(a, b []int) []int) []int {
+	size := len(a)
+	if size == 0 {
+		a = [][]int{[]int{}, []int{}}
+	}
+	if size == 1 {
+		a = append(a, []int{})
+	}
+	c := f(a[0], a[1])
+	for i := 2; i < size; i++ {
+		c = f(c, a[i])
+	}
+	return c
+}

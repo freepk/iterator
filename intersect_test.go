@@ -30,23 +30,11 @@ func intersect(a, b []int) []int {
 	return c
 }
 
-func intersectA(a [][]int) []int {
-	size := len(a)
-	if size < 2 {
-		return []int{}
-	}
-	c := intersect(a[0], a[1])
-	for i := 2; i < size; i++ {
-		c = intersect(c, a[i])
-	}
-	return c
-}
-
 func TestIntersect(t *testing.T) {
 	a := []int{0, 100, 200, 300, 350, 400}
 	b := []int{200, 400, 500}
 	c := []int{200, 400}
-	d := intersectA([][]int{a, b, c})
+	d := arraysCombine([][]int{a, b, c}, intersect)
 	if !arraysIsEqual(c, d) {
 		t.Fail()
 	}
@@ -55,7 +43,7 @@ func TestIntersect(t *testing.T) {
 func TestIntersectIterator(t *testing.T) {
 	for i := 10; i < 100; i++ {
 		a := randArrays(i, i*5)
-		b := intersectA(a)
+		b := arraysCombine(a, intersect)
 		c := NewIntersectIterator(arraysToIterators(a))
 		d := make([]int, 0)
 		for {

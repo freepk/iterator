@@ -2,6 +2,7 @@ package iterator
 
 import (
 	"math/rand"
+	"sort"
 
 	"github.com/freepk/radix"
 )
@@ -27,4 +28,41 @@ func arrayIteratorRnd(size int) *ArrayIterator {
 	}
 	radix.Ints(arr, tmp, size)
 	return NewArrayIterator(arr)
+}
+
+func arraysIsEqual(a, b []int) bool {
+	size := len(a)
+	if size != len(b) {
+		return false
+	}
+	for i := 0; i < size; i++ {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func randArrays(a, b int) [][]int {
+	n := rand.Intn(a) + 2
+	r := make([][]int, n)
+	for i := 0; i < n; i++ {
+		m := b + rand.Intn(b)
+		l := make([]int, m)
+		for j := 0; j < m; j++ {
+			l[j] = rand.Intn(2 * b)
+		}
+		sort.Ints(l)
+		r[i] = l
+	}
+	return r
+}
+
+func arraysToIterators(a [][]int) []Iterator {
+	size := len(a)
+	res := make([]Iterator, size)
+	for i := 0; i < size; i++ {
+		res[i] = NewArrayIterator(a[i])
+	}
+	return res
 }

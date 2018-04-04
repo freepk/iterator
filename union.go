@@ -18,6 +18,9 @@ func NewUnionIterator(iterators []Iterator) *UnionIterator {
 
 func (it *UnionIterator) swap(offset int) {
 	it.remains--
+	if it.remains == offset {
+		return
+	}
 	it.iterators[it.remains], it.iterators[offset] = it.iterators[offset], it.iterators[it.remains]
 	it.values[it.remains], it.values[offset] = it.values[offset], it.values[it.remains]
 }

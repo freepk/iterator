@@ -12,6 +12,7 @@ func NewUnionIterator(iterators []Iterator) *UnionIterator {
 		iterators: iterators,
 		values:    make([]int, size),
 		remains:   size}
+	iter.first()
 	return iter
 }
 

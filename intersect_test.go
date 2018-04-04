@@ -54,7 +54,7 @@ func TestIntersect(t *testing.T) {
 
 func TestIntersectIterator(t *testing.T) {
 	for i := 10; i < 100; i++ {
-		a := randArrays(i, i*10)
+		a := randArrays(i, i*5)
 		b := intersectA(a)
 		c := NewIntersectIterator(arraysToIterators(a))
 		d := make([]int, 0)

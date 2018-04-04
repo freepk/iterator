@@ -3,31 +3,26 @@ package iterator
 import (
 	"math/rand"
 	"sort"
-
-	"github.com/freepk/radix"
 )
 
-var (
-	arrayIterator0 *ArrayIterator
-	arrayIterator1 *ArrayIterator
-)
-
-func init() {
-	arrayIterator0 = arrayIteratorRnd(30000)
-	arrayIterator1 = arrayIteratorRnd(10000)
+func randArray(size int) []int {
+	if size == 0 {
+		return []int{}
+	}
+	res := make([]int, size)
+	for i := 0; i < size; i++ {
+		res[i] = rand.Intn(size * 2)
+	}
+	sort.Ints(res)
+	return res
 }
 
-func arrayIteratorRnd(size int) *ArrayIterator {
-	if size == 0 {
-		return NewArrayIterator([]int{})
+func randArrays(arraysNum, arraySize int) [][]int {
+	res := make([][]int, arraysNum)
+	for i := 0; i < arraysNum; i++ {
+		res[i] = randArray(arraySize)
 	}
-	arr := make([]int, size)
-	tmp := make([]int, size)
-	for i := 0; i < size; i++ {
-		arr[i] = rand.Int()
-	}
-	radix.Ints(arr, tmp, size)
-	return NewArrayIterator(arr)
+	return res
 }
 
 func arraysIsEqual(a, b []int) bool {
@@ -41,21 +36,6 @@ func arraysIsEqual(a, b []int) bool {
 		}
 	}
 	return true
-}
-
-func randArrays(a, b int) [][]int {
-	n := rand.Intn(a) + 2
-	r := make([][]int, n)
-	for i := 0; i < n; i++ {
-		m := b + rand.Intn(b)
-		l := make([]int, m)
-		for j := 0; j < m; j++ {
-			l[j] = rand.Intn(2 * b)
-		}
-		sort.Ints(l)
-		r[i] = l
-	}
-	return r
 }
 
 func arraysToIterators(a [][]int) []Iterator {

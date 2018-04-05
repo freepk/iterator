@@ -11,7 +11,6 @@ var (
 )
 
 func init() {
-	println("init testRandArrays")
 	testRandArrays = [][]int{
 		randArray(1000),
 		randArray(2000),
@@ -75,25 +74,26 @@ func arraysCombine(a [][]int, f func(a, b []int) []int) []int {
 	return c
 }
 
-func BenchmarkComplexIterator(z *testing.B) {
-	z.StopTimer()
+func TestComplexIterator(t *testing.T) {
 	a := NewArrayIterator([]int{1, 2, 3, 4, 5})
 	b := NewArrayIterator([]int{6, 7, 8, 9, 10})
 	c := NewArrayIterator([]int{1, 2, 3, 4, 5})
 	d := NewArrayIterator([]int{10, 20, 30, 40, 50})
-	e := NewUnionIterator([]Iterator{a, b})
-	f := NewUnionIterator([]Iterator{c, d})
+	e := NewUnionIterator([]Iterator{a, b, c})
+	f := NewUnionIterator([]Iterator{b, c, d})
 	g := NewIntersectIterator([]Iterator{e, f})
 	h := NewArrayIterator([]int{300, 400, 500})
 	r := NewUnionIterator([]Iterator{h, g})
-	z.StartTimer()
-	for i := 0; i < z.N; i++ {
-		r.Reset()
-		for {
-			_, ok := r.Next()
-			if !ok {
-				break
-			}
+
+	z := make([]int, 0)
+	for {
+		v, ok := r.Next()
+		if !ok {
+			break
 		}
+		z = append(z, v)
+	}
+	if !arraysIsEqual(z, []int{2, 3, 5, 10, 300, 400, 500}) {
+		t.Fail()
 	}
 }

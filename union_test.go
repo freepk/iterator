@@ -61,6 +61,19 @@ func TestUnionIterator(t *testing.T) {
 	if !arraysIsEqual(a, c) {
 		t.Fail()
 	}
+
+	c = c[:0]
+	b.Reset()
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arraysIsEqual(a, c) {
+		t.Fail()
+	}
 }
 
 func BenchmarkUnion(b *testing.B) {

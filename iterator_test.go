@@ -3,6 +3,7 @@ package iterator
 import (
 	"math/rand"
 	"sort"
+	"testing"
 )
 
 var (
@@ -72,4 +73,27 @@ func arraysCombine(a [][]int, f func(a, b []int) []int) []int {
 		c = f(c, a[i])
 	}
 	return c
+}
+
+func BenchmarkComplexIterator(z *testing.B) {
+	z.StopTimer()
+	a := NewArrayIterator([]int{1, 2, 3, 4, 5})
+	b := NewArrayIterator([]int{6, 7, 8, 9, 10})
+	c := NewArrayIterator([]int{1, 2, 3, 4, 5})
+	d := NewArrayIterator([]int{10, 20, 30, 40, 50})
+	e := NewUnionIterator([]Iterator{a, b})
+	f := NewUnionIterator([]Iterator{c, d})
+	g := NewIntersectIterator([]Iterator{e, f})
+	h := NewArrayIterator([]int{300, 400, 500})
+	r := NewUnionIterator([]Iterator{h, g})
+	z.StartTimer()
+	for i := 0; i < z.N; i++ {
+		r.Reset()
+		for {
+			_, ok := r.Next()
+			if !ok {
+				break
+			}
+		}
+	}
 }

@@ -4,6 +4,8 @@ import (
 	"math/rand"
 	"sort"
 	"testing"
+
+	"github.com/freepk/arrays"
 )
 
 var (
@@ -35,19 +37,6 @@ func randArrays(arraysNum, arraySize int) [][]int {
 		res[i] = randArray(arraySize)
 	}
 	return res
-}
-
-func arraysIsEqual(a, b []int) bool {
-	size := len(a)
-	if size != len(b) {
-		return false
-	}
-	for i := 0; i < size; i++ {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
 }
 
 func arraysToIterators(a [][]int) []Iterator {
@@ -93,7 +82,7 @@ func TestComplexIterator(t *testing.T) {
 		}
 		z = append(z, v)
 	}
-	if !arraysIsEqual(z, []int{2, 3, 5, 10, 300, 400, 500}) {
+	if !arrays.IsEqual(z, []int{2, 3, 5, 10, 300, 400, 500}) {
 		t.Fail()
 	}
 }

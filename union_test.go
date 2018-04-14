@@ -10,14 +10,14 @@ func TestUnion(t *testing.T) {
 	a := []int{0, 100, 200, 300, 350, 400}
 	b := []int{400, 500}
 	c := []int{200, 400}
-	d := arraysCombine([][]int{a, b, c}, arrays.Union)
+	d := arrays.Combine([][]int{a, b, c}, arrays.Union)
 	if !arrays.IsEqual([]int{0, 100, 200, 200, 300, 350, 400, 400, 400, 500}, d) {
 		t.Fail()
 	}
 }
 
 func TestUnionIterator(t *testing.T) {
-	a := arraysCombine(testRandArrays, arrays.Union)
+	a := arrays.Combine(testRandArrays, arrays.Union)
 	b := NewUnionIterator(arraysToIterators(testRandArrays))
 	c := make([]int, 0)
 	for {
@@ -47,7 +47,7 @@ func TestUnionIterator(t *testing.T) {
 
 func BenchmarkUnion(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		arraysCombine(testRandArrays, arrays.Union)
+		arrays.Combine(testRandArrays, arrays.Union)
 	}
 }
 

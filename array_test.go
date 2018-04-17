@@ -23,3 +23,29 @@ func TestArrayIterator(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func BenchmarkArray(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for _, arr := range testRandArrays {
+			for _, v := range arr {
+				_ = v
+			}
+		}
+	}
+}
+
+func BenchmarkArrayIterator(b *testing.B) {
+	iters := arraysToIterators(testRandArrays)
+	for i := 0; i < b.N; i++ {
+		for _, iter := range iters {
+			iter.Reset()
+			for {
+				v, ok := iter.Next()
+				if !ok {
+					break
+				}
+				_ = v
+			}
+		}
+	}
+}

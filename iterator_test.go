@@ -47,7 +47,6 @@ func arraysToIterators(a [][]int) []Iterator {
 	}
 	return res
 }
-
 func TestComplexIterator(t *testing.T) {
 	a := NewArrayIterator([]int{1, 2, 3, 4, 5})
 	b := NewArrayIterator([]int{6, 7, 8, 9, 10})

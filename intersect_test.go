@@ -10,14 +10,14 @@ func TestIntersect(t *testing.T) {
 	a := []int{0, 100, 200, 300, 350, 400}
 	b := []int{200, 400, 500}
 	c := []int{200, 400}
-	d := arrays.Combine([][]int{a, b, c}, arrays.Intersect)
+	d := combineArrays([][]int{a, b, c}, arrays.Intersect)
 	if !arrays.IsEqual(c, d) {
 		t.Fail()
 	}
 }
 
 func TestIntersectIterator(t *testing.T) {
-	a := arrays.Combine(testRandArrays, arrays.Intersect)
+	a := combineArrays(testRandArrays, arrays.Intersect)
 	b := NewIntersectIterator(arraysToIterators(testRandArrays))
 	c := make([]int, 0)
 	for {
@@ -47,7 +47,7 @@ func TestIntersectIterator(t *testing.T) {
 
 func BenchmarkIntersect(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		arrays.Combine(testRandArrays, arrays.Intersect)
+		combineArrays(testRandArrays, arrays.Intersect)
 	}
 }
 

@@ -47,6 +47,22 @@ func arraysToIterators(a [][]int) []Iterator {
 	}
 	return res
 }
+
+func combineArrays(a [][]int, f func([]int, []int) []int) []int {
+	size := len(a)
+	if size == 0 {
+		a = [][]int{[]int{}, []int{}}
+	}
+	if size == 1 {
+		a = append(a, []int{})
+	}
+	c := f(a[0], a[1])
+	for i := 2; i < size; i++ {
+		c = f(c, a[i])
+	}
+	return c
+}
+
 func TestComplexIterator(t *testing.T) {
 	a := NewArrayIterator([]int{1, 2, 3, 4, 5})
 	b := NewArrayIterator([]int{6, 7, 8, 9, 10})

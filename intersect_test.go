@@ -65,14 +65,14 @@ func BenchmarkIntersectIterator(b *testing.B) {
 }
 
 func BenchmarkArrIntersectIterator(b *testing.B) {
-        it := NewArrIntersectIterator(testRandArrays)
-        for i := 0; i < b.N; i++ {
-                it.Reset()
-                for {
-                        _, ok := it.Next()
-                        if !ok {
-                                break
-                        }
-                }
-        }
+	it := NewArrIntersectIterator(testRandArrays)
+	for i := 0; i < b.N; i++ {
+		it.Reset()
+		for {
+			_, ok := it.Next()
+			if !ok {
+				break
+			}
+		}
+	}
 }

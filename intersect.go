@@ -43,7 +43,7 @@ func (it *IntersectIterator) Next() (int, bool) {
 
 type ArrIntersectIterator struct {
 	a [][]int
-	i   []int
+	i []int
 }
 
 func NewArrIntersectIterator(a [][]int) *ArrIntersectIterator {

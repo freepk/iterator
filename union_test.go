@@ -45,6 +45,35 @@ func TestUnionIterator(t *testing.T) {
 	}
 }
 
+func TestArrUnionIterator(t *testing.T) {
+	a := combineArrays(testRandArrays, arrays.Union)
+	b := NewArrUnionIterator(testRandArrays)
+	c := make([]int, 0)
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arrays.IsEqual(a, c) {
+		t.Fail()
+	}
+
+	c = c[:0]
+	b.Reset()
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arrays.IsEqual(a, c) {
+		t.Fail()
+	}
+}
+
 func BenchmarkUnion(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		combineArrays(testRandArrays, arrays.Union)
@@ -53,6 +82,19 @@ func BenchmarkUnion(b *testing.B) {
 
 func BenchmarkUnionIterator(b *testing.B) {
 	it := NewUnionIterator(arraysToIterators(testRandArrays))
+	for i := 0; i < b.N; i++ {
+		it.Reset()
+		for {
+			_, ok := it.Next()
+			if !ok {
+				break
+			}
+		}
+	}
+}
+
+func BenchmarkArrUnionIterator(b *testing.B) {
+	it := NewArrUnionIterator(testRandArrays)
 	for i := 0; i < b.N; i++ {
 		it.Reset()
 		for {

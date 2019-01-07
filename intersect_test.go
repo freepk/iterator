@@ -45,6 +45,35 @@ func TestIntersectIterator(t *testing.T) {
 	}
 }
 
+func TestArrIntersectIterator(t *testing.T) {
+	a := combineArrays(testRandArrays, arrays.Intersect)
+	b := NewArrIntersectIterator(testRandArrays)
+	c := make([]int, 0)
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arrays.IsEqual(a, c) {
+		t.Fail()
+	}
+
+	c = c[:0]
+	b.Reset()
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arrays.IsEqual(a, c) {
+		t.Fail()
+	}
+}
+
 func BenchmarkIntersect(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		combineArrays(testRandArrays, arrays.Intersect)

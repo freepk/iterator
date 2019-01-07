@@ -1,65 +1,76 @@
 package iterator
 
 type UnionIterator struct {
-	iterators []Iterator
-	values    []int
-	remains   int
+	a []Iterator
+	v []int
+	p int
 }
 
-func NewUnionIterator(iterators []Iterator) *UnionIterator {
-	size := len(iterators)
-	iter := &UnionIterator{
-		iterators: iterators,
-		values:    make([]int, size),
-		remains:   size}
-	iter.first()
-	return iter
-}
-
-func (it *UnionIterator) swap(offset int) {
-	it.remains--
-	if it.remains == offset {
-		return
-	}
-	it.iterators[it.remains], it.iterators[offset] = it.iterators[offset], it.iterators[it.remains]
-	it.values[it.remains], it.values[offset] = it.values[offset], it.values[it.remains]
+func NewUnionIterator(a []Iterator) *UnionIterator {
+	it := &UnionIterator{a: a}
+	it.first()
+	return it
 }
 
 func (it *UnionIterator) first() {
-	ok := false
-	for i := 0; i < it.remains; i++ {
-		it.values[i], ok = it.iterators[i].Next()
-		if !ok {
-			it.swap(i)
+	it.v = it.v[:0]
+	n := len(it.a)
+	m := 0
+	i := 0
+	for i < n {
+		v, ok := it.a[i].Next()
+		if ok {
+			j := 0
+			for j < m {
+				if v < it.v[j] {
+					break
+				}
+				j++
+			}
+			m++
+			it.v = append(it.v, 0)
+			copy(it.v[j+1:], it.v[j:])
+			it.v[j] = v
+			it.a[i], it.a[j] = it.a[j], it.a[i]
+			i++
+		} else {
+			n--
+			it.a[i] = it.a[n]
 		}
 	}
+	it.a = it.a[:n]
+	it.p = 0
 }
 
 func (it *UnionIterator) Reset() {
-	it.remains = len(it.iterators)
-	for i := 0; i < it.remains; i++ {
-		it.iterators[i].Reset()
+	n := len(it.a)
+	for i := 0; i < n; i++ {
+		it.a[i].Reset()
 	}
 	it.first()
 }
 
 func (it *UnionIterator) Next() (int, bool) {
-	if it.remains == 0 {
+	n := len(it.a)
+	p := it.p
+	if p >= n {
 		return 0, false
 	}
-	offset := 0
-	advice := it.values[0]
-	for i := 1; i < it.remains; i++ {
-		if advice > it.values[i] {
-			offset = i
-			advice = it.values[i]
-		}
-	}
-	value, ok := it.iterators[offset].Next()
+	v := it.v[p]
+	x, ok := it.a[p].Next()
 	if ok {
-		it.values[offset] = value
+		it.v[p] = x
+		p++
+		for p < n {
+			if x < it.v[p] {
+				break
+			}
+			it.a[p-1], it.a[p] = it.a[p], it.a[p-1]
+			it.v[p-1], it.v[p] = it.v[p], it.v[p-1]
+			p++
+		}
 	} else {
-		it.swap(offset)
+		it.p++
 	}
-	return advice, true
+	return v, true
 }

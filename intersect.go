@@ -1,29 +1,29 @@
 package iterator
 
 type IntersectIterator struct {
-	arr []Iterator
+	a []Iterator
 }
 
-func NewIntersectIterator(arr []Iterator) *IntersectIterator {
-	return &IntersectIterator{arr: arr}
+func NewIntersectIterator(a []Iterator) *IntersectIterator {
+	return &IntersectIterator{a: a}
 }
 
 func (it *IntersectIterator) Reset() {
-	n := len(it.arr)
+	n := len(it.a)
 	for i := 0; i < n; i++ {
-		it.arr[i].Reset()
+		it.a[i].Reset()
 	}
 }
 
 func (it *IntersectIterator) Next() (int, bool) {
-	n := len(it.arr)
-	v, ok := it.arr[0].Next()
+	n := len(it.a)
+	v, ok := it.a[0].Next()
 	if !ok {
 		return 0, false
 	}
 	i := 1
 	for i < n {
-		x, ok := it.arr[i].Next()
+		x, ok := it.a[i].Next()
 		if !ok {
 			return 0, false
 		}
@@ -31,7 +31,7 @@ func (it *IntersectIterator) Next() (int, bool) {
 			continue
 		}
 		if x > v {
-			it.arr[0], it.arr[i] = it.arr[i], it.arr[0]
+			it.a[0], it.a[i] = it.a[i], it.a[0]
 			i = 1
 			v = x
 			continue
@@ -42,14 +42,14 @@ func (it *IntersectIterator) Next() (int, bool) {
 }
 
 type ArrIntersectIterator struct {
-	arr [][]int
+	a [][]int
 	i   []int
 }
 
-func NewArrIntersectIterator(arr [][]int) *ArrIntersectIterator {
-	n := len(arr)
+func NewArrIntersectIterator(a [][]int) *ArrIntersectIterator {
+	n := len(a)
 	i := make([]int, n)
-	return &ArrIntersectIterator{arr: arr, i: i}
+	return &ArrIntersectIterator{a: a, i: i}
 }
 
 func (it *ArrIntersectIterator) Reset() {
@@ -60,26 +60,26 @@ func (it *ArrIntersectIterator) Reset() {
 }
 
 func (it *ArrIntersectIterator) Next() (int, bool) {
-	n := len(it.arr)
+	n := len(it.a)
 	k := it.i[0]
-	if k >= len(it.arr[0]) {
+	if k >= len(it.a[0]) {
 		return 0, false
 	}
 	it.i[0]++
-	v := it.arr[0][k]
+	v := it.a[0][k]
 	i := 1
 	for i < n {
 		k = it.i[i]
-		if k >= len(it.arr[i]) {
+		if k >= len(it.a[i]) {
 			return 0, false
 		}
 		it.i[i]++
-		x := it.arr[i][k]
+		x := it.a[i][k]
 		if x < v {
 			continue
 		}
 		if x > v {
-			it.arr[0], it.arr[i] = it.arr[i], it.arr[0]
+			it.a[0], it.a[i] = it.a[i], it.a[0]
 			it.i[0], it.i[i] = it.i[i], it.i[0]
 			i = 1
 			v = x

@@ -21,8 +21,13 @@ func (it *IntersectIterator) Next() (int, bool) {
 	if !ok {
 		return 0, false
 	}
+	p := 0
 	i := 1
 	for i < n {
+		if i == p {
+			i++
+			continue
+		}
 		x, ok := it.a[i].Next()
 		if !ok {
 			return 0, false
@@ -31,8 +36,8 @@ func (it *IntersectIterator) Next() (int, bool) {
 			continue
 		}
 		if x > v {
-			it.a[0], it.a[i] = it.a[i], it.a[0]
-			i = 1
+			p = i
+			i = 0
 			v = x
 			continue
 		}
@@ -67,8 +72,13 @@ func (it *ArrIntersectIterator) Next() (int, bool) {
 	}
 	it.i[0]++
 	v := it.a[0][k]
+	p := 0
 	i := 1
 	for i < n {
+		if i == p {
+			i++
+			continue
+		}
 		k = it.i[i]
 		if k >= len(it.a[i]) {
 			return 0, false
@@ -79,9 +89,8 @@ func (it *ArrIntersectIterator) Next() (int, bool) {
 			continue
 		}
 		if x > v {
-			it.a[0], it.a[i] = it.a[i], it.a[0]
-			it.i[0], it.i[i] = it.i[i], it.i[0]
-			i = 1
+			p = i
+			i = 0
 			v = x
 			continue
 		}

@@ -14,9 +14,9 @@ var (
 
 func init() {
 	testRandArrays = [][]int{
-		randArray(1000),
-		randArray(2000),
-		randArray(3000)}
+		randArray(100000),
+		randArray(200000),
+		randArray(300000)}
 }
 
 func randArray(size int) []int {

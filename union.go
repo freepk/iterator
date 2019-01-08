@@ -43,10 +43,7 @@ func (it *UnionIterator) Next() (int, bool) {
 		x, ok := it.a[i].Next()
 		if !ok {
 			it.n--
-			if i != it.n {
-				it.a[i], it.a[it.n] = it.a[it.n], it.a[i]
-				it.v[i], it.v[it.n] = it.v[it.n], it.v[i]
-			}
+			swap(it.a, it.v, i, it.n)
 			continue
 		}
 		if x == v {
@@ -61,25 +58,25 @@ func (it *UnionIterator) Next() (int, bool) {
 type ArrUnionIterator struct {
 	a [][]int
 	v []int
-	i []int
+	k []int
 	n int
 }
 
 func NewArrUnionIterator(a [][]int) *ArrUnionIterator {
 	n := len(a)
 	v := make([]int, n)
-	i := make([]int, n)
-	it := &ArrUnionIterator{a: a, v: v, i: i}
-	it.n = firsta(it.a, it.v, it.i)
+	k := make([]int, n)
+	it := &ArrUnionIterator{a: a, v: v, k: k}
+	it.n = firsta(it.a, it.v, it.k)
 	return it
 }
 
 func (it *ArrUnionIterator) Reset() {
 	n := len(it.a)
 	for i := 0; i < n; i++ {
-		it.i[i] = 0
+		it.k[i] = 0
 	}
-	it.n = firsta(it.a, it.v, it.i)
+	it.n = firsta(it.a, it.v, it.k)
 }
 
 func (it *ArrUnionIterator) Next() (int, bool) {
@@ -100,17 +97,15 @@ func (it *ArrUnionIterator) Next() (int, bool) {
 			i++
 			continue
 		}
-		k := it.i[i]
+		k := it.k[i]
 		if k >= len(it.a[i]) {
 			it.n--
 			if i != it.n {
-				it.a[i], it.a[it.n] = it.a[it.n], it.a[i]
-				it.v[i], it.v[it.n] = it.v[it.n], it.v[i]
-				it.i[i], it.i[it.n] = it.i[it.n], it.i[i]
+				swapa(it.a, it.v, it.k, i, it.n)
 			}
 			continue
 		}
-		it.i[i]++
+		it.k[i]++
 		x := it.a[i][k]
 		if x == v {
 			continue

@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"sort"
 	"testing"
+	"time"
 
 	"github.com/freepk/arrays"
 )
@@ -13,6 +14,7 @@ var (
 )
 
 func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	testRandArrays = [][]int{
 		randArray(100000),
 		randArray(200000),
@@ -25,7 +27,7 @@ func randArray(size int) []int {
 	}
 	res := make([]int, size)
 	for i := 0; i < size; i++ {
-		res[i] = rand.Intn(size * 2)
+		res[i] = rand.Intn(size * 10)
 	}
 	sort.Ints(res)
 	return res
@@ -68,11 +70,11 @@ func TestComplexIterator(t *testing.T) {
 	b := NewArrayIterator([]int{6, 7, 8, 9, 10})
 	c := NewArrayIterator([]int{1, 2, 3, 4, 5})
 	d := NewArrayIterator([]int{10, 20, 30, 40, 50})
-	e := NewUnionIterator([]Iterator{a, b, c})
-	f := NewUnionIterator([]Iterator{b, c, d})
+	e := NewUnionAllIterator([]Iterator{a, b, c})
+	f := NewUnionAllIterator([]Iterator{b, c, d})
 	g := NewIntersectIterator([]Iterator{e, f})
 	h := NewArrayIterator([]int{300, 400, 500})
-	r := NewUnionIterator([]Iterator{h, g})
+	r := NewUnionAllIterator([]Iterator{h, g})
 
 	z := make([]int, 0)
 	for {

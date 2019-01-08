@@ -17,7 +17,6 @@ func TestUnion(t *testing.T) {
 }
 
 func TestUnionIterator(t *testing.T) {
-	return
 	a := combineArrays(testRandArrays, arrays.Union)
 	b := NewUnionIterator(arraysToIterators(testRandArrays))
 	c := make([]int, 0)
@@ -47,7 +46,6 @@ func TestUnionIterator(t *testing.T) {
 }
 
 func TestArrUnionIterator(t *testing.T) {
-	return
 	a := combineArrays(testRandArrays, arrays.Union)
 	b := NewArrUnionIterator(testRandArrays)
 	c := make([]int, 0)

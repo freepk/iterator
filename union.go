@@ -42,23 +42,34 @@ func (it *UnionIterator) Next() (int, bool) {
 	if it.n == 0 {
 		return 0, false
 	}
-	i := 0
 	v := it.v[0]
-	for j := 1; j < it.n; j++ {
-		if v > it.v[j] {
-			i = j
-			v = it.v[j]
+	i := 1
+	for i < it.n {
+		if v > it.v[i] {
+			v = it.v[i]
 		}
+		i++
 	}
-	x, ok := it.a[i].Next()
-	if ok {
-		it.v[i] = x
-	} else {
-		it.n--
-		if i != it.n {
-			it.a[i], it.a[it.n] = it.a[it.n], it.a[i]
-			it.v[i], it.v[it.n] = it.v[it.n], it.v[i]
+	i = 0
+	for i < it.n {
+		if it.v[i] > v {
+			i++
+			continue
 		}
+		x, ok := it.a[i].Next()
+		if !ok {
+			it.n--
+			if i != it.n {
+				it.a[i], it.a[it.n] = it.a[it.n], it.a[i]
+				it.v[i], it.v[it.n] = it.v[it.n], it.v[i]
+			}
+			continue
+		}
+		if x == v {
+			continue
+		}
+		it.v[i] = x
+		i++
 	}
 	return v, true
 }
@@ -107,25 +118,37 @@ func (it *ArrUnionIterator) Next() (int, bool) {
 	if it.n == 0 {
 		return 0, false
 	}
-	i := 0
 	v := it.v[0]
-	for j := 1; j < it.n; j++ {
-		if v > it.v[j] {
-			i = j
-			v = it.v[j]
+	i := 1
+	for i < it.n {
+		if v > it.v[i] {
+			v = it.v[i]
 		}
+		i++
 	}
-	k := it.i[i]
-	if k < len(it.a[i]) {
-		it.v[i] = it.a[i][k]
-		it.i[i]++
-	} else {
-		it.n--
-		if i != it.n {
-			it.a[i], it.a[it.n] = it.a[it.n], it.a[i]
-			it.v[i], it.v[it.n] = it.v[it.n], it.v[i]
-			it.i[i], it.i[it.n] = it.i[it.n], it.i[i]
+	i = 0
+	for i < it.n {
+		if it.v[i] > v {
+			i++
+			continue
 		}
+		k := it.i[i]
+		if k >= len(it.a[i]) {
+			it.n--
+			if i != it.n {
+				it.a[i], it.a[it.n] = it.a[it.n], it.a[i]
+				it.v[i], it.v[it.n] = it.v[it.n], it.v[i]
+				it.i[i], it.i[it.n] = it.i[it.n], it.i[i]
+			}
+			continue
+		}
+		it.i[i]++
+		x := it.a[i][k]
+		if x == v {
+			continue
+		}
+		it.v[i] = x
+		i++
 	}
 	return v, true
 }

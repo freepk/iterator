@@ -10,24 +10,8 @@ func NewUnionIterator(a []Iterator) *UnionIterator {
 	n := len(a)
 	v := make([]int, n)
 	it := &UnionIterator{a: a, v: v}
-	it.first()
+	it.n = first(it.a, it.v)
 	return it
-}
-
-func (it *UnionIterator) first() {
-	n := len(it.a)
-	i := 0
-	for i < n {
-		v, ok := it.a[i].Next()
-		if ok {
-			it.v[i] = v
-			i++
-		} else {
-			n--
-			it.a[i] = it.a[n]
-		}
-	}
-	it.n = n
 }
 
 func (it *UnionIterator) Reset() {
@@ -35,7 +19,7 @@ func (it *UnionIterator) Reset() {
 	for i := 0; i < n; i++ {
 		it.a[i].Reset()
 	}
-	it.first()
+	it.n = first(it.a, it.v)
 }
 
 func (it *UnionIterator) Next() (int, bool) {
@@ -86,24 +70,8 @@ func NewArrUnionIterator(a [][]int) *ArrUnionIterator {
 	v := make([]int, n)
 	i := make([]int, n)
 	it := &ArrUnionIterator{a: a, v: v, i: i}
-	it.first()
+	it.n = firsta(it.a, it.v, it.i)
 	return it
-}
-
-func (it *ArrUnionIterator) first() {
-	n := len(it.a)
-	i := 0
-	for i < n {
-		if len(it.a[i]) > 0 {
-			it.v[i] = it.a[i][0]
-			it.i[i] = 1
-			i++
-		} else {
-			n--
-			it.a[i] = it.a[n]
-		}
-	}
-	it.n = n
 }
 
 func (it *ArrUnionIterator) Reset() {
@@ -111,7 +79,7 @@ func (it *ArrUnionIterator) Reset() {
 	for i := 0; i < n; i++ {
 		it.i[i] = 0
 	}
-	it.first()
+	it.n = firsta(it.a, it.v, it.i)
 }
 
 func (it *ArrUnionIterator) Next() (int, bool) {

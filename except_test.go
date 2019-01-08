@@ -15,3 +15,55 @@ func TestExcept(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestExceptIterator(t *testing.T) {
+	a := combineArrays(testRandArrays, arrays.Except)
+	b := NewExceptIterator(
+		NewArrayIterator(testRandArrays[0]),
+		arraysToIterators(testRandArrays[1:]))
+	c := make([]int, 0)
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arrays.IsEqual(a, c) {
+		t.Fail()
+	}
+
+	c = c[:0]
+	b.Reset()
+	for {
+		v, ok := b.Next()
+		if !ok {
+			break
+		}
+		c = append(c, v)
+	}
+	if !arrays.IsEqual(a, c) {
+		t.Fail()
+	}
+}
+
+func BenchmarkExcept(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		combineArrays(testRandArrays, arrays.Except)
+	}
+}
+
+func BenchmarkExceptIterator(b *testing.B) {
+	it := NewExceptIterator(
+		NewArrayIterator(testRandArrays[0]),
+		arraysToIterators(testRandArrays[1:]))
+	for i := 0; i < b.N; i++ {
+		it.Reset()
+		for {
+			_, ok := it.Next()
+			if !ok {
+				break
+			}
+		}
+	}
+}

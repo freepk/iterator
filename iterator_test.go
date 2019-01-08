@@ -16,9 +16,9 @@ var (
 func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	testRandArrays = [][]int{
-		randArray(100000),
-		randArray(200000),
-		randArray(300000)}
+		randArray(1000),
+		randArray(2000),
+		randArray(3000)}
 }
 
 func randArray(size int) []int {

@@ -1,1 +1,1 @@
-## Basic iterators (simplified)
+## Basic iterators

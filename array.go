@@ -1,23 +1,25 @@
 package iterator
 
-type ArrayIterator struct {
-	items  []int
-	offset int
+type ArrayIter struct {
+	a []int
+	n int
+	i int
 }
 
-func NewArrayIterator(items []int) *ArrayIterator {
-	return &ArrayIterator{items: items, offset: 0}
+func NewArrayIter(a []int) *ArrayIter {
+	n := len(a)
+	return &ArrayIter{a: a, n: n, i: 0}
 }
 
-func (it *ArrayIterator) Reset() {
-	it.offset = 0
+func (it *ArrayIter) Reset() {
+	it.i = 0
 }
 
-func (it *ArrayIterator) Next() (int, bool) {
-	if it.offset < len(it.items) {
-		offset := it.offset
-		it.offset++
-		return it.items[offset], true
+func (it *ArrayIter) Next() (int, bool) {
+	i := it.i
+	if i < it.n {
+		it.i++
+		return it.a[i], true
 	}
 	return 0, false
 }

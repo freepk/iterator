@@ -6,100 +6,34 @@ import (
 	"github.com/freepk/arrays"
 )
 
-func TestUnionAll(t *testing.T) {
-	a := []int{0, 100, 200, 300, 350, 400}
-	b := []int{400, 500}
-	c := []int{200, 400}
-	d := combineArrays([][]int{a, b, c}, arrays.UnionAll)
-	if !arrays.IsEqual([]int{0, 100, 200, 200, 300, 350, 400, 400, 400, 500}, d) {
-		t.Fail()
-	}
-}
-
-func TestUnionAllIterator(t *testing.T) {
-	a := combineArrays(testRandArrays, arrays.UnionAll)
-	b := NewUnionAllIterator(arraysToIterators(testRandArrays))
-	c := make([]int, 0)
+func TestUnionAllIter(t *testing.T) {
+	a0 := randArray(3000)
+	a1 := randArray(2000)
+	it := NewUnionAllIter(NewArrayIter(a0), NewArrayIter(a1))
+	it.Reset()
+	out := make([]int, 0)
 	for {
-		v, ok := b.Next()
-		if !ok {
+		if v, ok := it.Next(); !ok {
 			break
+		} else {
+			out = append(out, v)
 		}
-		c = append(c, v)
 	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-
-	c = c[:0]
-	b.Reset()
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-}
-
-func TestArrUnionAllIterator(t *testing.T) {
-	a := combineArrays(testRandArrays, arrays.UnionAll)
-	b := NewArrUnionAllIterator(testRandArrays)
-	c := make([]int, 0)
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-
-	c = c[:0]
-	b.Reset()
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
+	if !arrays.IsEqual(out, arrays.UnionAll(a0, a1)) {
 		t.Fail()
 	}
 }
 
 func BenchmarkUnionAll(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		combineArrays(testRandArrays, arrays.UnionAll)
-	}
-}
-
-func BenchmarkUnionAllIterator(b *testing.B) {
-	it := NewUnionAllIterator(arraysToIterators(testRandArrays))
+	a0 := randArray(3000)
+	a1 := randArray(2000)
+	a2 := randArray(1000)
+	it := NewUnionAllIter(NewUnionAllIter(NewArrayIter(a0), NewArrayIter(a1)), NewArrayIter(a2))
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		it.Reset()
 		for {
-			_, ok := it.Next()
-			if !ok {
-				break
-			}
-		}
-	}
-}
-
-func BenchmarkArrUnionAllIterator(b *testing.B) {
-	it := NewArrUnionAllIterator(testRandArrays)
-	for i := 0; i < b.N; i++ {
-		it.Reset()
-		for {
-			_, ok := it.Next()
-			if !ok {
+			if _, ok := it.Next(); !ok {
 				break
 			}
 		}

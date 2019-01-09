@@ -1,55 +1,46 @@
 package iterator
 
-type ExceptIterator struct {
-	a Iterator
-	b []Iterator
-	v []int
-	n int
+type ExceptIter struct {
+	a  Iterator
+	b  Iterator
+	b0 int
+	b1 bool
 }
 
-func NewExceptIterator(a Iterator, b []Iterator) *ExceptIterator {
-	n := len(b)
-	v := make([]int, n)
-	it := &ExceptIterator{a: a, b: b, v: v}
-	it.n = first(it.b, it.v)
+func NewExceptIter(a, b Iterator) *ExceptIter {
+	it := &ExceptIter{a: a, b: b}
+	it.b0, it.b1 = it.b.Next()
 	return it
 }
 
-func (it *ExceptIterator) Reset() {
+func (it *ExceptIter) Reset() {
 	it.a.Reset()
-	n := len(it.b)
-	for i := 0; i < n; i++ {
-		it.b[i].Reset()
-	}
-	it.n = first(it.b, it.v)
+	it.b.Reset()
+	it.b0, it.b1 = it.b.Next()
 }
 
-func (it *ExceptIterator) Next() (int, bool) {
-	v, ok := it.a.Next()
+func (it *ExceptIter) Next() (int, bool) {
+	a, ok := it.a.Next()
 	if !ok {
 		return 0, false
 	}
-	i := 0
-	for i < it.n {
-		if v == it.v[i] {
-			v, ok = it.a.Next()
-			if !ok {
+	if !it.b1 {
+		return a, true
+	}
+	for {
+		if a == it.b0 {
+			if a, ok = it.a.Next(); !ok {
 				return 0, false
 			}
-			i = 0
 			continue
 		}
-		if v > it.v[i] {
-			x, ok := it.b[i].Next()
-			if !ok {
-				it.n--
-				swap(it.b, it.v, i, it.n)
-				continue
+		if a > it.b0 {
+			if it.b0, it.b1 = it.b.Next(); !it.b1 {
+				return a, true
 			}
-			it.v[i] = x
 			continue
 		}
-		i++
+		break
 	}
-	return v, true
+	return a, true
 }

@@ -1,117 +1,47 @@
 package iterator
 
-type UnionIterator struct {
-	a []Iterator
-	v []int
-	n int
+type UnionIter struct {
+	a  Iterator
+	b  Iterator
+	a0 int
+	a1 bool
+	b0 int
+	b1 bool
 }
 
-func NewUnionIterator(a []Iterator) *UnionIterator {
-	n := len(a)
-	v := make([]int, n)
-	it := &UnionIterator{a: a, v: v}
-	it.n = first(it.a, it.v)
+func NewUnionIter(a, b Iterator) *UnionIter {
+	it := &UnionIter{a: a, b: b}
+	it.a0, it.a1 = it.a.Next()
+	it.b0, it.b1 = it.b.Next()
 	return it
 }
 
-func (it *UnionIterator) Reset() {
-	n := len(it.a)
-	for i := 0; i < n; i++ {
-		it.a[i].Reset()
-	}
-	it.n = first(it.a, it.v)
+func (it *UnionIter) Reset() {
+	it.a.Reset()
+	it.b.Reset()
+	it.a0, it.a1 = it.a.Next()
+	it.b0, it.b1 = it.b.Next()
 }
 
-func (it *UnionIterator) Next() (int, bool) {
-	if it.n == 0 {
+func (it *UnionIter) Next() (int, bool) {
+	v := 0
+	if it.a1 && it.b1 {
+		v = it.a0
+		if v > it.b0 {
+			v = it.b0
+		}
+	} else if it.a1 {
+		v = it.a0
+	} else if it.b1 {
+		v = it.b0
+	} else {
 		return 0, false
 	}
-	v := it.v[0]
-	i := 1
-	for i < it.n {
-		if v > it.v[i] {
-			v = it.v[i]
-		}
-		i++
+	for it.a0 == v && it.a1 {
+		it.a0, it.a1 = it.a.Next()
 	}
-	i = 0
-	for i < it.n {
-		if it.v[i] > v {
-			i++
-			continue
-		}
-		x, ok := it.a[i].Next()
-		if !ok {
-			it.n--
-			swap(it.a, it.v, i, it.n)
-			continue
-		}
-		if x == v {
-			continue
-		}
-		it.v[i] = x
-		i++
-	}
-	return v, true
-}
-
-type ArrUnionIterator struct {
-	a [][]int
-	v []int
-	k []int
-	n int
-}
-
-func NewArrUnionIterator(a [][]int) *ArrUnionIterator {
-	n := len(a)
-	v := make([]int, n)
-	k := make([]int, n)
-	it := &ArrUnionIterator{a: a, v: v, k: k}
-	it.n = firsta(it.a, it.v, it.k)
-	return it
-}
-
-func (it *ArrUnionIterator) Reset() {
-	n := len(it.a)
-	for i := 0; i < n; i++ {
-		it.k[i] = 0
-	}
-	it.n = firsta(it.a, it.v, it.k)
-}
-
-func (it *ArrUnionIterator) Next() (int, bool) {
-	if it.n == 0 {
-		return 0, false
-	}
-	v := it.v[0]
-	i := 1
-	for i < it.n {
-		if v > it.v[i] {
-			v = it.v[i]
-		}
-		i++
-	}
-	i = 0
-	for i < it.n {
-		if it.v[i] > v {
-			i++
-			continue
-		}
-		k := it.k[i]
-		if k >= len(it.a[i]) {
-			it.n--
-			if i != it.n {
-				swapa(it.a, it.v, it.k, i, it.n)
-			}
-			continue
-		}
-		it.k[i]++
-		x := it.a[i][k]
-		if x == v {
-			continue
-		}
-		it.v[i] = x
-		i++
+	for it.b0 == v && it.b1 {
+		it.b0, it.b1 = it.b.Next()
 	}
 	return v, true
 }

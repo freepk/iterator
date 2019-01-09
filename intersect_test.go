@@ -6,100 +6,34 @@ import (
 	"github.com/freepk/arrays"
 )
 
-func TestIntersect(t *testing.T) {
-	a := []int{0, 100, 200, 300, 350, 400}
-	b := []int{200, 400, 500}
-	c := []int{200, 400}
-	d := combineArrays([][]int{a, b, c}, arrays.Intersect)
-	if !arrays.IsEqual(c, d) {
+func TestInter(t *testing.T) {
+	a0 := randArray(3000)
+	a1 := randArray(2000)
+	it := NewInterIter(NewArrayIter(a0), NewArrayIter(a1))
+	it.Reset()
+	out := make([]int, 0)
+	for {
+		if v, ok := it.Next(); !ok {
+			break
+		} else {
+			out = append(out, v)
+		}
+	}
+	if !arrays.IsEqual(out, arrays.Intersect(a0, a1)) {
 		t.Fail()
 	}
 }
 
-func TestIntersectIterator(t *testing.T) {
-	a := combineArrays(testRandArrays, arrays.Intersect)
-	b := NewIntersectIterator(arraysToIterators(testRandArrays))
-	c := make([]int, 0)
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-
-	c = c[:0]
-	b.Reset()
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-}
-
-func TestArrIntersectIterator(t *testing.T) {
-	a := combineArrays(testRandArrays, arrays.Intersect)
-	b := NewArrIntersectIterator(testRandArrays)
-	c := make([]int, 0)
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-
-	c = c[:0]
-	b.Reset()
-	for {
-		v, ok := b.Next()
-		if !ok {
-			break
-		}
-		c = append(c, v)
-	}
-	if !arrays.IsEqual(a, c) {
-		t.Fail()
-	}
-}
-
-func BenchmarkIntersect(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		combineArrays(testRandArrays, arrays.Intersect)
-	}
-}
-
-func BenchmarkIntersectIterator(b *testing.B) {
-	it := NewIntersectIterator(arraysToIterators(testRandArrays))
+func BenchmarkInter(b *testing.B) {
+	a0 := randArray(3000)
+	a1 := randArray(2000)
+	a2 := randArray(1000)
+	it := NewInterIter(NewInterIter(NewArrayIter(a0), NewArrayIter(a1)), NewArrayIter(a2))
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		it.Reset()
 		for {
-			_, ok := it.Next()
-			if !ok {
-				break
-			}
-		}
-	}
-}
-
-func BenchmarkArrIntersectIterator(b *testing.B) {
-	it := NewArrIntersectIterator(testRandArrays)
-	for i := 0; i < b.N; i++ {
-		it.Reset()
-		for {
-			_, ok := it.Next()
-			if !ok {
+			if _, ok := it.Next(); !ok {
 				break
 			}
 		}

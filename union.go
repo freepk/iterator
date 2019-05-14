@@ -23,6 +23,13 @@ func (it *UnionIter) Reset() {
 	it.b0, it.b1 = it.b.Next()
 }
 
+func (it *UnionIter) ResetToEnd() {
+	it.a.ResetToEnd()
+	it.b.ResetToEnd()
+	it.a0, it.a1 = it.a.Prev()
+	it.b0, it.b1 = it.b.Prev()
+}
+
 func (it *UnionIter) Next() (int, bool) {
 	v := 0
 	if it.a1 && it.b1 {
@@ -42,6 +49,29 @@ func (it *UnionIter) Next() (int, bool) {
 	}
 	for it.b0 == v && it.b1 {
 		it.b0, it.b1 = it.b.Next()
+	}
+	return v, true
+}
+
+func (it *UnionIter) Prev() (int, bool) {
+	v := 0
+	if it.a1 && it.b1 {
+		v = it.a0
+		if v < it.b0 {
+			v = it.b0
+		}
+	} else if it.a1 {
+		v = it.a0
+	} else if it.b1 {
+		v = it.b0
+	} else {
+		return 0, false
+	}
+	for it.a0 == v && it.a1 {
+		it.a0, it.a1 = it.a.Prev()
+	}
+	for it.b0 == v && it.b1 {
+		it.b0, it.b1 = it.b.Prev()
 	}
 	return v, true
 }

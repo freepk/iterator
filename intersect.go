@@ -14,6 +14,11 @@ func (it *InterIter) Reset() {
 	it.b.Reset()
 }
 
+func (it *InterIter) ResetToEnd() {
+	it.a.ResetToEnd()
+	it.b.ResetToEnd()
+}
+
 func (it *InterIter) Next() (int, bool) {
 	a, ok := it.a.Next()
 	if !ok {
@@ -40,3 +45,31 @@ func (it *InterIter) Next() (int, bool) {
 	}
 	return a, true
 }
+
+func (it *InterIter) Prev() (int, bool) {
+	a, ok := it.a.Prev()
+	if !ok {
+		return 0, false
+	}
+	b, ok := it.b.Prev()
+	if !ok {
+		return 0, false
+	}
+	for {
+		if a > b {
+			if a, ok = it.a.Prev(); !ok {
+				return 0, false
+			}
+			continue
+		}
+		if a < b {
+			if b, ok = it.b.Prev(); !ok {
+				return 0, false
+			}
+			continue
+		}
+		break
+	}
+	return a, true
+}
+

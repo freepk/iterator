@@ -2,7 +2,6 @@ package iterator
 
 import (
 	"testing"
-
 	"github.com/freepk/arrays"
 )
 
@@ -25,6 +24,25 @@ func TestUnionIter(t *testing.T) {
 	}
 }
 
+func TestUnionIterPrev(t *testing.T) {
+	a0 := randArray(3000)
+	a1 := randArray(2000)
+	it := NewUnionIter(NewArrayIter(a0), NewArrayIter(a1))
+	it.ResetToEnd()
+	out := make([]int, 0)
+	for {
+		if v, ok := it.Prev(); !ok {
+			break
+		} else {
+			out = append(out, v)
+		}
+	}
+	
+	if !arrays.IsEqual(out, arrays.Reverse(arrays.Union(a0, a1))) {
+		t.Fail()
+	}
+}
+
 func BenchmarkUnion(b *testing.B) {
 	a0 := randArray(3000)
 	a1 := randArray(2000)
@@ -35,6 +53,22 @@ func BenchmarkUnion(b *testing.B) {
 		it.Reset()
 		for {
 			if _, ok := it.Next(); !ok {
+				break
+			}
+		}
+	}
+}
+
+func BenchmarkUnionPrev(b *testing.B) {
+	a0 := randArray(3000)
+	a1 := randArray(2000)
+	a2 := randArray(1000)
+	it := NewUnionIter(NewUnionIter(NewArrayIter(a0), NewArrayIter(a1)), NewArrayIter(a2))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		it.ResetToEnd()
+		for {
+			if _, ok := it.Prev(); !ok {
 				break
 			}
 		}
